@@ -1,5 +1,5 @@
 # General
-aws_region  = "ap-southeast-2"
-aws_account = "222337787619"
+aws_region  = "ap-southeast-1"
+aws_account = "707538076348"
 
 # CloudFront Distribution

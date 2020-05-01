@@ -1,3 +1,34 @@
+# CloudFront Origin Access Identity
+output "aws_cloudfront_origin_access_identity_id" {
+  value       = "${aws_cloudfront_distribution.this.id}"
+  description = "The identifier for the distribution. For example: EDFDVBD632BHDS5."
+}
+
+output "aws_cloudfront_origin_access_identity_caller_reference" {
+  value       = "${aws_cloudfront_distribution.this.caller_reference}"
+  description = "Internal value used by CloudFront to allow future updates to the origin access identity."
+}
+
+output "aws_cloudfront_origin_access_identity_cloudfront_access_identity_path" {
+  value       = "${aws_cloudfront_distribution.this.id}"
+  description = "A shortcut to the full path for the origin access identity to use in CloudFront, see below."
+}
+
+output "aws_cloudfront_origin_access_identity_etag" {
+  value       = "${aws_cloudfront_distribution.this.id}"
+  description = "The current version of the origin access identity's information. For example: E2QWRUHAPOMQZL."
+}
+
+output "aws_cloudfront_origin_access_identity_iam_arn" {
+  value       = "${aws_cloudfront_distribution.this.id}"
+  description = "A pre-generated ARN for use in S3 bucket policies (see below). Example: arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity E2QWRUHAPOMQZL."
+}
+
+output "aws_cloudfront_origin_access_identity_s3_canonical_user_id" {
+  value       = "${aws_cloudfront_distribution.this.id}"
+  description = "The Amazon S3 canonical user ID for the origin access identity, which you use when giving the origin access identity read permission to an object in Amazon S3."
+}
+
 # CloudFront Distribution
 output "aws_cloudfront_distribution_id" {
   value       = "${aws_cloudfront_distribution.this.id}"
@@ -30,7 +61,7 @@ output "aws_cloudfront_distribution_domain_name" {
 }
 
 output "aws_cloudfront_distribution_last_modified_time" {
-  value       = "${aws_cloudfront_distribution.this.ast_modified_time}"
+  value       = "${aws_cloudfront_distribution.this.last_modified_time}"
   description = "The date and time the distribution was last modified."
 }
 

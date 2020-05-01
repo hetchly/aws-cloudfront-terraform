@@ -1,120 +1,69 @@
 # S3 Bucket
 resource "aws_s3_bucket" "this" {
-  bucket = "mybucket"
+  bucket = "jrdalino-myproject-customer-web"
   acl    = "private"
 }
 
 locals {
-  s3_origin_id = "myS3Origin"
+  s3_origin_id = "MyProjectCostumerWeb"
 }
 
-# CloudFront Origin Access Identuty
+# CloudFront Origin Access Identity
 resource "aws_cloudfront_origin_access_identity" "this" {
-  comment = "Cloudfront Origin Access Identity Resource for ..."
+  comment = "MyProjectCostumerWeb"
 }
 
 # CloudFront Distribution
-resource "aws_cloudfront_distribution" "s3_distribution" {
+resource "aws_cloudfront_distribution" "this" {
+  # aliases
+  # comment
+  # custom_error_response
+  default_cache_behavior {
+    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods   = ["GET", "HEAD"]
+    compress         = true
+    default_ttl      = 3600
+    # field_level_encryption_id
+    forwarded_values {
+      query_string = true
+      cookies {
+        forward = "none"
+      }
+    }
+    # lambda_function_association
+    max_ttl          = 86400
+    min_ttl          = 0
+    # path_pattern
+    # smooth_streaming 
+    target_origin_id = "${local.s3_origin_id}"
+    # trusted_signers
+    viewer_protocol_policy = "allow-all"
+  }
+  default_root_object = "index.html"
+  enabled = true
+  is_ipv6_enabled = true
+  # http_version 
+  # logging_config
+  # ordered_cache_behavior
   origin {
     domain_name = "${aws_s3_bucket.this.bucket_regional_domain_name}"
     origin_id   = "${local.s3_origin_id}"
-
     s3_origin_config {
       origin_access_identity = "${aws_cloudfront_origin_access_identity.this.cloudfront_access_identity_path}"
     }
   }
-
-  enabled             = true
-  is_ipv6_enabled     = true
-  comment             = "Some comment"
-  default_root_object = "index.html"
-
-  logging_config {
-    include_cookies = false
-    bucket          = "mylogs.s3.amazonaws.com"
-    prefix          = "myprefix"
-  }
-
-  aliases = ["mysite.example.com", "yoursite.example.com"]
-
-  default_cache_behavior {
-    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "${local.s3_origin_id}"
-
-    forwarded_values {
-      query_string = false
-
-      cookies {
-        forward = "none"
-      }
-    }
-
-    viewer_protocol_policy = "allow-all"
-    min_ttl                = 0
-    default_ttl            = 3600
-    max_ttl                = 86400
-  }
-
-  # Cache behavior with precedence 0
-  ordered_cache_behavior {
-    path_pattern     = "/content/immutable/*"
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-    cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id = "${local.s3_origin_id}"
-
-    forwarded_values {
-      query_string = false
-      headers      = ["Origin"]
-
-      cookies {
-        forward = "none"
-      }
-    }
-
-    min_ttl                = 0
-    default_ttl            = 86400
-    max_ttl                = 31536000
-    compress               = true
-    viewer_protocol_policy = "redirect-to-https"
-  }
-
-  # Cache behavior with precedence 1
-  ordered_cache_behavior {
-    path_pattern     = "/content/*"
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-    cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "${local.s3_origin_id}"
-
-    forwarded_values {
-      query_string = false
-
-      cookies {
-        forward = "none"
-      }
-    }
-
-    min_ttl                = 0
-    default_ttl            = 3600
-    max_ttl                = 86400
-    compress               = true
-    viewer_protocol_policy = "redirect-to-https"
-  }
-
-  price_class = "PriceClass_200"
-
+  # origin_group 
+  price_class = "PriceClass_All"
   restrictions {
     geo_restriction {
-      restriction_type = "whitelist"
-      locations        = ["US", "CA", "GB", "DE"]
+      restriction_type = "none"
     }
   }
-
-  tags = {
-    Environment = "production"
-  }
-
+  # tags
   viewer_certificate {
     cloudfront_default_certificate = true
   }
+  # web_acl_id
+  retain_on_delete = false
+  # wait_for_deployment = true
 }
